@@ -17,8 +17,15 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       try {
         const data = await loginApi(credentials)
+        // 保存token到状态和localStorage
         this.token = data.token || data.auth_data
         localStorage.setItem('token', this.token)
+        
+        // 如果有auth_data，也保存到localStorage
+        if (data.auth_data) {
+          localStorage.setItem('auth_data', data.auth_data)
+        }
+        
         await this.fetchUserInfo()
         return data
       } catch (error) {
@@ -30,8 +37,15 @@ export const useAuthStore = defineStore('auth', {
     async register(userData) {
       try {
         const data = await registerApi(userData)
+        // 保存token到状态和localStorage
         this.token = data.token || data.auth_data
         localStorage.setItem('token', this.token)
+        
+        // 如果有auth_data，也保存到localStorage
+        if (data.auth_data) {
+          localStorage.setItem('auth_data', data.auth_data)
+        }
+        
         await this.fetchUserInfo()
         return data
       } catch (error) {
@@ -49,6 +63,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = ''
         this.user = null
         localStorage.removeItem('token')
+        localStorage.removeItem('auth_data')
       }
     },
     

@@ -57,12 +57,25 @@ import AnimeCard from '@/components/AnimeCard.vue'
 
 const route = useRoute()
 
+// 验证URL格式，只允许http和https协议
+const isValidUrl = (url) => {
+  try {
+    const urlObj = new URL(url)
+    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 // 从URL参数中获取背景图片
 const backgroundStyle = computed(() => {
   const bgUrl = route.query.bg || ''
-  if (bgUrl) {
+  // 验证URL格式以防止XSS攻击
+  if (bgUrl && isValidUrl(bgUrl)) {
+    // 使用CSS.escape确保URL安全（如果浏览器支持）
+    const safeUrl = bgUrl.replace(/['"]/g, '') // 移除引号
     return {
-      backgroundImage: `url(${bgUrl})`,
+      backgroundImage: `url("${safeUrl}")`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

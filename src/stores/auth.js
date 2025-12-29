@@ -4,7 +4,7 @@ import { getUserInfo } from '@/api/user'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || '',
+    token: localStorage.getItem('auth_data') || localStorage.getItem('token') || '',
     user: null,
   }),
   
@@ -17,14 +17,12 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       try {
         const data = await loginApi(credentials)
-        // 保存token到状态和localStorage
-        this.token = data.token || data.auth_data
-        localStorage.setItem('token', this.token)
+        // 优先使用auth_data作为token
+        this.token = data.auth_data || data.token
+        localStorage.setItem('auth_data', this.token)
         
-        // 如果有auth_data，也保存到localStorage
-        if (data.auth_data) {
-          localStorage.setItem('auth_data', data.auth_data)
-        }
+        // 为了向后兼容，也保存到token
+        localStorage.setItem('token', this.token)
         
         await this.fetchUserInfo()
         return data
@@ -37,14 +35,12 @@ export const useAuthStore = defineStore('auth', {
     async register(userData) {
       try {
         const data = await registerApi(userData)
-        // 保存token到状态和localStorage
-        this.token = data.token || data.auth_data
-        localStorage.setItem('token', this.token)
+        // 优先使用auth_data作为token
+        this.token = data.auth_data || data.token
+        localStorage.setItem('auth_data', this.token)
         
-        // 如果有auth_data，也保存到localStorage
-        if (data.auth_data) {
-          localStorage.setItem('auth_data', data.auth_data)
-        }
+        // 为了向后兼容，也保存到token
+        localStorage.setItem('token', this.token)
         
         await this.fetchUserInfo()
         return data

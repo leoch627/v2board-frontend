@@ -22,6 +22,12 @@ const routes = [
     meta: { requiresAuth: false },
   },
   {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('@/views/Dashboard.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/plans',
     name: 'Plans',
     component: () => import('@/views/Plans.vue'),
@@ -71,7 +77,7 @@ router.beforeEach((to, from, next) => {
     })
   } else if ((to.path === '/login' || to.path === '/register') && authStore.isLoggedIn) {
     // 已登录，访问登录/注册页面时跳转到首页
-    next('/plans')
+    next('/dashboard')
   } else {
     next()
   }

@@ -257,7 +257,7 @@ const handleRegister = async () => {
       try {
         await authStore.register(registerForm)
         ElMessage.success('注册成功！')
-        router.push('/plans')
+        router.push('/dashboard')
       } catch (error) {
         console.error('Register error:', error)
       } finally {

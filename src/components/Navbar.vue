@@ -11,6 +11,10 @@
       </div>
       
       <div v-if="isLoggedIn" class="navbar-menu">
+        <router-link to="/dashboard" class="nav-item" active-class="active">
+          <el-icon><Odometer /></el-icon>
+          <span>首页</span>
+        </router-link>
         <router-link to="/plans" class="nav-item" active-class="active">
           <el-icon><ShoppingCart /></el-icon>
           <span>套餐</span>
@@ -18,10 +22,6 @@
         <router-link to="/orders" class="nav-item" active-class="active">
           <el-icon><Document /></el-icon>
           <span>订单</span>
-        </router-link>
-        <router-link to="/subscribe" class="nav-item" active-class="active">
-          <el-icon><Link /></el-icon>
-          <span>订阅</span>
         </router-link>
         <router-link to="/profile" class="nav-item" active-class="active">
           <el-icon><User /></el-icon>
@@ -41,7 +41,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
-import { ShoppingCart, Document, Link, User, SwitchButton } from '@element-plus/icons-vue'
+import { ShoppingCart, Document, Link, User, SwitchButton, Odometer } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

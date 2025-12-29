@@ -152,3 +152,19 @@ export function getOrderStatusType(status) {
   }
   return typeMap[status] || 'info'
 }
+
+/**
+ * 检测是否为移动设备
+ */
+export function isMobileDevice() {
+  // Check user agent
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera
+  
+  // Mobile regex patterns
+  const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
+  
+  // Check screen size as well
+  const isMobileScreen = window.innerWidth <= 768
+  
+  return mobileRegex.test(userAgent.toLowerCase()) || isMobileScreen
+}

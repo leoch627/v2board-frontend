@@ -17,6 +17,9 @@ export const useUserStore = defineStore('user', {
     // 获取用户Token
     token: (state) => state.info?.token || '',
     
+    // 套餐名称
+    planName: (state) => state.stat?.plan_name || '暂无套餐',
+    
     // 已用流量 (GB)
     usedTraffic: (state) => {
       if (!state.stat) return 0

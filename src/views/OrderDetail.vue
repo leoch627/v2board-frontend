@@ -141,9 +141,79 @@ const getPeriodText = (period) => {
 }
 
 // 处理支付
-const handlePay = () => {
-  ElMessage.info('支付功能正在开发中...')
-  // TODO: 实现支付逻辑
+const handlePay = async () => {
+  try {
+    // Fetch payment methods first
+    const { getPaymentMethods, checkoutOrder } = await import('@/api/order')
+    const methods = await getPaymentMethods()
+    
+    if (!methods || methods.length === 0) {
+      ElMessage.warning('暂无可用的支付方式')
+      return
+    }
+    
+    // Show payment method selection dialog
+    const options = methods.map(m => `<label style="display: block; margin: 10px 0;">
+      <input type="radio" name="payment" value="${m.id}" ${m.id === methods[0].id ? 'checked' : ''}> 
+      ${m.name}
+    </label>`).join('')
+    
+    const result = await ElMessageBox.confirm(
+      `<div style="text-align: left;">
+        <p style="margin-bottom: 15px;">请选择支付方式：</p>
+        <form id="payment-form">${options}</form>
+      </div>`,
+      '选择支付方式',
+      {
+        confirmButtonText: '确认支付',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+      }
+    )
+    
+    // Get selected payment method
+    const selectedMethod = document.querySelector('input[name="payment"]:checked')?.value
+    
+    if (!selectedMethod) {
+      ElMessage.error('请选择支付方式')
+      return
+    }
+    
+    // Checkout order
+    const checkoutResult = await checkoutOrder({
+      trade_no: order.value.trade_no,
+      method: parseInt(selectedMethod)
+    })
+    
+    // Handle payment result
+    if (checkoutResult.type === 0) {
+      // QR code payment
+      ElMessageBox.alert(
+        `<div style="text-align: center;">
+          <p style="margin-bottom: 15px;">请使用支付宝/微信扫码支付</p>
+          <img src="${checkoutResult.data}" style="max-width: 300px;" />
+        </div>`,
+        '扫码支付',
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: '已完成支付'
+        }
+      ).then(() => {
+        fetchOrderDetail() // Refresh order status
+      })
+    } else if (checkoutResult.type === 1) {
+      // Redirect payment
+      window.location.href = checkoutResult.data
+    } else {
+      ElMessage.success('支付请求已提交')
+      fetchOrderDetail()
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Payment error:', error)
+      ElMessage.error('支付失败，请重试')
+    }
+  }
 }
 
 // 取消订单

@@ -14,10 +14,10 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
-    // 从 localStorage 获取 token
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = token
+    // 从 localStorage 获取 auth_data
+    const authData = localStorage.getItem('auth_data')
+    if (authData) {
+      config.headers.Authorization = authData
     }
     return config
   },

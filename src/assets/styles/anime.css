@@ -1,0 +1,261 @@
+/* 二次元主题样式 */
+
+/* 玻璃态效果 */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-effect-dark {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 二次元卡片悬停效果 */
+.anime-card-hover {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.anime-card-hover:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 40px 0 rgba(255, 107, 157, 0.3);
+}
+
+/* 二次元按钮样式 */
+.anime-button {
+  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 32px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px 0 rgba(255, 107, 157, 0.3);
+}
+
+.anime-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px 0 rgba(255, 107, 157, 0.4);
+}
+
+.anime-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.anime-button-purple {
+  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+}
+
+.anime-button-blue {
+  background: linear-gradient(135deg, #89CFF0, #A0D8F1);
+}
+
+/* 二次元输入框 */
+.anime-input {
+  border-radius: 15px;
+  border: 2px solid rgba(255, 107, 157, 0.3);
+  padding: 12px 20px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.anime-input:focus {
+  border-color: #FF6B9D;
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
+  outline: none;
+}
+
+/* 二次元卡片 */
+.anime-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 8px 32px 0 rgba(255, 107, 157, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* 渐变背景 */
+.gradient-pink {
+  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+}
+
+.gradient-purple {
+  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+}
+
+.gradient-blue {
+  background: linear-gradient(135deg, #89CFF0, #A0D8F1);
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #FFF0F5 0%, #E0B0FF 100%);
+}
+
+/* 徽章样式 */
+.anime-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.anime-badge-success {
+  background: linear-gradient(135deg, #89CFF0, #A0D8F1);
+  color: white;
+}
+
+.anime-badge-warning {
+  background: linear-gradient(135deg, #FFD93D, #FFE66D);
+  color: #333;
+}
+
+.anime-badge-danger {
+  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  color: white;
+}
+
+.anime-badge-info {
+  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+  color: white;
+}
+
+/* 加载动画容器 */
+.anime-loader {
+  display: inline-block;
+  position: relative;
+}
+
+/* 可爱的小球加载动画 */
+.anime-loader-balls {
+  display: flex;
+  gap: 8px;
+}
+
+.anime-loader-ball {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.anime-loader-ball:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.anime-loader-ball:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* 星星装饰 */
+.anime-star {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: white;
+  clip-path: polygon(
+    50% 0%, 
+    61% 35%, 
+    98% 35%, 
+    68% 57%, 
+    79% 91%, 
+    50% 70%, 
+    21% 91%, 
+    32% 57%, 
+    2% 35%, 
+    39% 35%
+  );
+  animation: sparkle 3s ease-in-out infinite;
+}
+
+/* 文字渐变效果 */
+.text-gradient-pink {
+  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 分隔线 */
+.anime-divider {
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 107, 157, 0.5), 
+    transparent
+  );
+  margin: 20px 0;
+}
+
+/* 圆形头像 */
+.anime-avatar {
+  border-radius: 50%;
+  border: 3px solid #FF6B9D;
+  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+/* 进度条 */
+.anime-progress {
+  height: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+.anime-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B9D, #FFA8D5);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.anime-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

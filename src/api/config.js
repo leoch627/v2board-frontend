@@ -3,9 +3,10 @@ import request from './request'
 /**
  * 获取服务器配置
  */
+
 export function getConfig() {
   return request({
-    url: '/passport/comm/config',
+    url: '/guest/comm/config',
     method: 'get',
   })
 }

@@ -27,6 +27,28 @@
             />
           </el-form-item>
           
+          <el-form-item prop="email_code" v-if="config && (config.email_verify === 1 || config.is_email_verify === 1)">
+            <div style="display: flex; gap: 8px;">
+              <el-input
+                v-model="registerForm.email_code"
+                placeholder="邮箱验证码"
+                class="anime-input"
+                size="large"
+                prefix-icon="Key"
+                style="flex: 1;"
+              />
+              <el-button
+                :loading="sendingCode"
+                :disabled="countdown > 0"
+                size="large"
+                @click="handleSendEmailCode"
+                style="width: 120px;"
+              >
+                {{ countdown > 0 ? `${countdown}秒后重试` : '发送验证码' }}
+              </el-button>
+            </div>
+          </el-form-item>
+          
           <el-form-item prop="password">
             <el-input
               v-model="registerForm.password"
@@ -54,7 +76,7 @@
           <el-form-item prop="invite_code">
             <el-input
               v-model="registerForm.invite_code"
-              placeholder="邀请码（可选）"
+              :placeholder="config && config.is_invite_force === 1 ? '邀请码（必填）' : '邀请码（可选）'"
               class="anime-input"
               size="large"
               prefix-icon="Ticket"
@@ -83,24 +105,103 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
 import AnimeCard from '@/components/AnimeCard.vue'
+import { getConfig, sendEmailVerify } from '@/api/config'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const registerFormRef = ref(null)
 const loading = ref(false)
+const sendingCode = ref(false)
+const countdown = ref(0)
+const config = ref(null)
 
 const registerForm = reactive({
   email: '',
   password: '',
   password_confirmation: '',
   invite_code: '',
+  email_code: '',
 })
+
+// 获取服务器配置
+const fetchConfig = async () => {
+  try {
+    config.value = await getConfig()
+  } catch (error) {
+    console.error('Failed to fetch config:', error)
+  }
+}
+
+// 发送邮箱验证码
+const handleSendEmailCode = async () => {
+  // 验证邮箱格式
+  if (!registerForm.email) {
+    ElMessage.error('请输入邮箱地址')
+    return
+  }
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(registerForm.email)) {
+    ElMessage.error('请输入正确的邮箱格式')
+    return
+  }
+  
+  // 检查邮箱后缀限制
+  if (config.value?.email_whitelist_enable === 1 && config.value?.email_whitelist_suffix) {
+    const suffixList = config.value.email_whitelist_suffix
+    const emailSuffix = registerForm.email.split('@')[1]
+    
+    if (!suffixList.includes(emailSuffix)) {
+      ElMessage.error(`只允许使用以下邮箱后缀: ${suffixList.join(', ')}`)
+      return
+    }
+  }
+  
+  sendingCode.value = true
+  try {
+    await sendEmailVerify({ email: registerForm.email })
+    ElMessage.success('验证码已发送到您的邮箱')
+    
+    // 开始倒计时
+    countdown.value = 60
+    const timer = setInterval(() => {
+      countdown.value--
+      if (countdown.value <= 0) {
+        clearInterval(timer)
+      }
+    }, 1000)
+  } catch (error) {
+    console.error('Failed to send email code:', error)
+  } finally {
+    sendingCode.value = false
+  }
+}
+
+// 验证邮箱后缀
+const validateEmailSuffix = (rule, value, callback) => {
+  if (!value) {
+    callback()
+    return
+  }
+  
+  if (config.value?.email_whitelist_enable === 1 && config.value?.email_whitelist_suffix) {
+    const suffixList = config.value.email_whitelist_suffix
+    const emailSuffix = value.split('@')[1]
+    
+    if (!suffixList.includes(emailSuffix)) {
+      callback(new Error(`只允许使用以下邮箱后缀: ${suffixList.join(', ')}`))
+      return
+    }
+  }
+  
+  callback()
+}
 
 const validatePasswordMatch = (rule, value, callback) => {
   if (value !== registerForm.password) {
@@ -110,10 +211,11 @@ const validatePasswordMatch = (rule, value, callback) => {
   }
 }
 
-const registerRules = {
+const registerRules = reactive({
   email: [
     { required: true, message: '请输入邮箱地址', trigger: 'blur' },
     { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' },
+    { validator: validateEmailSuffix, trigger: 'blur' },
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' },
@@ -123,6 +225,27 @@ const registerRules = {
     { required: true, message: '请确认密码', trigger: 'blur' },
     { validator: validatePasswordMatch, trigger: 'blur' },
   ],
+  email_code: [],
+  invite_code: [],
+})
+
+// 根据服务器配置动态更新验证规则
+const updateValidationRules = () => {
+  if (config.value) {
+    // 邮箱验证码是否必填
+    if (config.value.email_verify === 1 || config.value.is_email_verify === 1) {
+      registerRules.email_code = [
+        { required: true, message: '请输入邮箱验证码', trigger: 'blur' },
+      ]
+    }
+    
+    // 邀请码是否必填
+    if (config.value.is_invite_force === 1) {
+      registerRules.invite_code = [
+        { required: true, message: '请输入邀请码', trigger: 'blur' },
+      ]
+    }
+  }
 }
 
 const handleRegister = async () => {
@@ -143,6 +266,11 @@ const handleRegister = async () => {
     }
   })
 }
+
+onMounted(async () => {
+  await fetchConfig()
+  updateValidationRules()
+})
 </script>
 
 <style scoped>

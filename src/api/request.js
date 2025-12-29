@@ -45,7 +45,10 @@ request.interceptors.response.use(
       // Token 过期或未授权，跳转到登录页
       if (res.code === 401 || res.code === 403) {
         localStorage.removeItem('token')
-        router.push('/login')
+        localStorage.removeItem('auth_data')
+        if (router.currentRoute.value.path !== '/login') {
+          router.push('/login')
+        }
       }
       
       return Promise.reject(new Error(res.message || '请求失败'))
@@ -59,23 +62,37 @@ request.interceptors.response.use(
     let message = '网络错误，请稍后重试'
     
     if (error.response) {
-      switch (error.response.status) {
-        case 401:
-          message = '未授权，请重新登录'
-          localStorage.removeItem('token')
+      // 优先使用后端返回的错误消息（通常是中文）
+      if (error.response.data?.message) {
+        message = error.response.data.message
+      } else {
+        // 如果没有后端消息，使用状态码映射
+        switch (error.response.status) {
+          case 401:
+            message = '未授权，请重新登录'
+            localStorage.removeItem('token')
+            localStorage.removeItem('auth_data')
+            router.push('/login')
+            break
+          case 403:
+            message = '拒绝访问'
+            break
+          case 404:
+            message = '请求的资源不存在'
+            break
+          case 500:
+            message = '服务器错误'
+            break
+        }
+      }
+      
+      // 如果是401或403，清理token并跳转
+      if (error.response.status === 401 || error.response.status === 403) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('auth_data')
+        if (router.currentRoute.value.path !== '/login') {
           router.push('/login')
-          break
-        case 403:
-          message = '拒绝访问'
-          break
-        case 404:
-          message = '请求的资源不存在'
-          break
-        case 500:
-          message = '服务器错误'
-          break
-        default:
-          message = error.response.data?.message || '请求失败'
+        }
       }
     }
     

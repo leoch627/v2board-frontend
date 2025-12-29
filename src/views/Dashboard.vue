@@ -156,7 +156,12 @@
           <div class="qrcode-section">
             <label class="section-label">扫码订阅</label>
             <div class="qrcode-box">
-              <canvas ref="qrcodeCanvas" class="qrcode-canvas"></canvas>
+              <canvas 
+                ref="qrcodeCanvas" 
+                class="qrcode-canvas"
+                role="img"
+                :aria-label="`订阅地址二维码: ${subscribeUrl}`"
+              ></canvas>
             </div>
           </div>
 
@@ -435,7 +440,7 @@ const handleImport = (client) => {
   let importUrl = ''
   
   if (client.needsEncode) {
-    // For Shadowrocket, encode the URL in base64
+    // Encode the URL in base64 for clients that require it
     const encodedUrl = btoa(subscribeUrl.value)
     importUrl = client.scheme + encodedUrl
   } else if (client.urlScheme) {

@@ -158,7 +158,7 @@ export function getOrderStatusType(status) {
  */
 export function isMobileDevice() {
   // Check user agent
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera
+  const userAgent = navigator.userAgent || navigator.vendor || ''
   
   // Mobile regex patterns
   const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i

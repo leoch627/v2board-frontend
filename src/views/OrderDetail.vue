@@ -111,6 +111,7 @@ const router = useRouter()
 
 const loading = ref(true)
 const order = ref(null)
+const selectedPaymentMethod = ref(null)
 
 // 获取订单详情
 const fetchOrderDetail = async () => {
@@ -153,28 +154,42 @@ const handlePay = async () => {
     }
     
     // Show payment method selection dialog
-    const options = methods.map(m => `<label style="display: block; margin: 10px 0;">
-      <input type="radio" name="payment" value="${m.id}" ${m.id === methods[0].id ? 'checked' : ''}> 
-      ${m.name}
-    </label>`).join('')
+    const options = methods.map(m => {
+      // HTML escape the method name to prevent XSS
+      const escapedName = String(m.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
+      return `<label style="display: block; margin: 10px 0;">
+        <input type="radio" name="payment" value="${m.id}" data-method-id="${m.id}" ${m.id === methods[0].id ? 'checked' : ''}> 
+        ${escapedName}
+      </label>`
+    }).join('')
+    
+    // Initialize selected method with first method
+    selectedPaymentMethod.value = methods[0]?.id
     
     const result = await ElMessageBox.confirm(
       `<div style="text-align: left;">
         <p style="margin-bottom: 15px;">请选择支付方式：</p>
-        <form id="payment-form">${options}</form>
+        <form id="payment-form" onchange="document.dispatchEvent(new CustomEvent('paymentMethodChanged', {detail: {value: event.target.value}}))">${options}</form>
       </div>`,
       '选择支付方式',
       {
         confirmButtonText: '确认支付',
         cancelButtonText: '取消',
         dangerouslyUseHTMLString: true,
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            const selected = document.querySelector('input[name="payment"]:checked')
+            if (selected) {
+              selectedPaymentMethod.value = parseInt(selected.value)
+            }
+          }
+          done()
+        }
       }
     )
     
-    // Get selected payment method
-    const selectedMethod = document.querySelector('input[name="payment"]:checked')?.value
-    
-    if (!selectedMethod) {
+    // Use the reactive variable instead of querying DOM
+    if (!selectedPaymentMethod.value) {
       ElMessage.error('请选择支付方式')
       return
     }
@@ -182,7 +197,7 @@ const handlePay = async () => {
     // Checkout order
     const checkoutResult = await checkoutOrder({
       trade_no: order.value.trade_no,
-      method: parseInt(selectedMethod)
+      method: selectedPaymentMethod.value
     })
     
     // Handle payment result

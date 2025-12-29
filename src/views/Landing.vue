@@ -52,30 +52,16 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
 import AnimeCard from '@/components/AnimeCard.vue'
 
-const route = useRoute()
+// 从环境变量中获取背景图片URL
+const bgUrl = import.meta.env.VITE_LANDING_BG_URL || ''
 
-// 验证URL格式，只允许http和https协议
-const isValidUrl = (url) => {
-  try {
-    const urlObj = new URL(url)
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:'
-  } catch {
-    return false
-  }
-}
-
-// 从URL参数中获取背景图片
+// 根据配置的背景图片URL设置背景样式
 const backgroundStyle = computed(() => {
-  const bgUrl = route.query.bg || ''
-  // 验证URL格式以防止XSS攻击
-  if (bgUrl && isValidUrl(bgUrl)) {
-    // 使用CSS.escape确保URL安全（如果浏览器支持）
-    const safeUrl = bgUrl.replace(/['"]/g, '') // 移除引号
+  if (bgUrl) {
     return {
-      backgroundImage: `url("${safeUrl}")`,
+      backgroundImage: `url("${bgUrl}")`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

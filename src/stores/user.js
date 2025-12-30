@@ -30,14 +30,14 @@ export const useUserStore = defineStore('user', {
       const source = state.subscribe || state.info
       if (!source) return '0 GB'
       const used = (source.u || 0) + (source.d || 0)
-      return formatTraffic(used)
+      return formatTraffic(used, 'bytes') // 后端返回 bytes，避免二次放大
     },
     
     // 总流量（格式化为GB/TB）
     totalTraffic: (state) => {
       const total = state.subscribe?.transfer_enable || state.info?.transfer_enable
       if (!total) return '0 GB'
-      return formatTraffic(total)
+      return formatTraffic(total, 'bytes') // 后端返回 bytes，避免二次放大
     },
     
     // 流量使用百分比

@@ -32,7 +32,7 @@
           <div class="plan-features">
             <div class="feature-item">
               <el-icon><Connection /></el-icon>
-              <span>{{ formatTraffic(plan.transfer_enable) }} 流量</span>
+              <span>{{ formatTraffic(plan.transfer_enable, 'gb') }} 流量</span>
             </div>
             <div v-if="plan.speed_limit" class="feature-item">
               <el-icon><Odometer /></el-icon>

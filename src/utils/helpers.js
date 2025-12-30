@@ -8,24 +8,26 @@ export function formatBytes(bytes, decimals = 2) {
   
   const k = 1024
   const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB']
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
   
   const i = Math.floor(Math.log(bytes) / Math.log(k))
   
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+  const index = i >= sizes.length ? sizes.length - 1 : i
+  return parseFloat((bytes / Math.pow(k, index)).toFixed(dm)) + ' ' + sizes[index]
 }
 
-// 格式化流量，支持通过环境变量指定输入单位（bytes/MB/GB）
-const TRAFFIC_UNIT = (import.meta.env.VITE_TRAFFIC_UNIT || 'bytes').toLowerCase()
-export function formatTraffic(amount) {
+// 格式化流量
+// 默认按 bytes 输入；若指定 unit='gb' 表示输入是 GB（例如套餐列表返回单位为 GB）
+export function formatTraffic(amount, unit = 'bytes') {
   if (amount === undefined || amount === null || amount === '') return '0 Bytes'
   const numeric = Number(amount)
   if (Number.isNaN(numeric)) return '0 Bytes'
 
   let bytes = numeric
-  if (TRAFFIC_UNIT === 'mb') {
+  const normalized = unit.toLowerCase()
+  if (normalized === 'mb') {
     bytes = numeric * 1024 * 1024
-  } else if (TRAFFIC_UNIT === 'gb') {
+  } else if (normalized === 'gb') {
     bytes = numeric * 1024 * 1024 * 1024
   }
 
@@ -184,24 +186,4 @@ export function isMobileDevice() {
   const isMobileScreen = window.innerWidth <= 768
   
   return mobileRegex.test(userAgent.toLowerCase()) || isMobileScreen
-}
-
-/**
- * 格式化流量显示（GB/TB单位）
- * @param {number} bytes - 字节数
- * @param {number} decimals - 小数位数
- */
-export function formatTraffic(bytes, decimals = 2) {
-  if (!bytes || bytes === 0) return '0 GB'
-  
-  const GB = 1073741824 // 1024^3 bytes (1 GB in bytes)
-  const gb = bytes / GB
-  
-  // 如果大于1024GB，使用TB单位
-  if (gb > 1024) {
-    const tb = gb / 1024
-    return tb.toFixed(decimals) + ' TB'
-  }
-  
-  return gb.toFixed(decimals) + ' GB'
 }

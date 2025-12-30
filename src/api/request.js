@@ -35,22 +35,28 @@ request.interceptors.response.use(
     // 如果返回的状态码不是 200，则判断为错误
     if (res.code !== undefined && res.code !== 200) {
       // 显示可爱的错误提示
-      ElMessage({
-        message: res.message || '请求失败',
-        type: 'error',
-        duration: 3000,
-        customClass: 'anime-message-error',
-      })
-      
-      // Token 过期或未授权，跳转到登录页
+      // Token 过期或未授权，跳转到登录页，避免多次提示
       if (res.code === 401 || res.code === 403) {
         localStorage.removeItem('token')
         localStorage.removeItem('auth_data')
         if (router.currentRoute.value.path !== '/login') {
-          router.push('/login')
+          router.push({
+            path: '/login',
+            query: { redirect: router.currentRoute.value.fullPath },
+          })
         }
       }
-      
+
+      // 非授权错误再提示，避免重复弹窗
+      if (res.code !== 401 && res.code !== 403) {
+        ElMessage({
+          message: res.message || '请求失败',
+          type: 'error',
+          duration: 3000,
+          customClass: 'anime-message-error',
+        })
+      }
+
       return Promise.reject(new Error(res.message || '请求失败'))
     }
     

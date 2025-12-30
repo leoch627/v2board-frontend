@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', {
     planId: (state) => state.info?.plan_id || null,
     
     // 套餐名称
-    planName: (state) => state.stat?.plan_name || '暂无套餐',
+    planName: (state) => state.stat?.plan_name || state.info?.plan_name || '暂无套餐',
     
     // 已用流量（格式化为GB/TB）
     usedTraffic: (state) => {

@@ -177,7 +177,7 @@ export function isMobileDevice() {
 export function formatTraffic(bytes, decimals = 2) {
   if (!bytes || bytes === 0) return '0 GB'
   
-  const GB = 1073741824 // 1024^3
+  const GB = 1073741824 // 1024^3 bytes (1 GB in bytes)
   const gb = bytes / GB
   
   // 如果大于1024GB，使用TB单位

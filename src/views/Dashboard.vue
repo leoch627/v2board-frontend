@@ -273,7 +273,7 @@ const currentPlan = ref(null)
 
 // Check if user has a plan
 const hasPlan = computed(() => {
-  return userStore.info?.plan_id && userStore.info.plan_id > 0
+  return userStore.planId && userStore.planId > 0
 })
 
 // Preview plans (show first 3)
@@ -348,7 +348,7 @@ const userGreeting = computed(() => {
 
 // Plan name
 const planName = computed(() => {
-  return userStore.stat?.plan_name || userStore.info?.plan_name || '暂无套餐'
+  return userStore.planName
 })
 
 // Progress color

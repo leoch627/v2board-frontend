@@ -60,7 +60,7 @@
               </div>
               <div class="info-item">
                 <span class="info-label">流量</span>
-                <span class="info-value">{{ formatBytes(order.plan.transfer_enable) }}</span>
+                <span class="info-value">{{ formatTraffic(order.plan.transfer_enable) }}</span>
               </div>
               <div v-if="order.plan.speed_limit" class="info-item">
                 <span class="info-label">速度限制</span>
@@ -99,7 +99,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getOrderDetail, cancelOrder, getPaymentMethods, checkoutOrder } from '@/api/order'
-import { formatDate, formatPrice, formatBytes, getOrderStatusText, getOrderStatusType } from '@/utils/helpers'
+import { formatDate, formatPrice, formatTraffic, getOrderStatusText, getOrderStatusType } from '@/utils/helpers'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import Layout from '@/components/Layout.vue'

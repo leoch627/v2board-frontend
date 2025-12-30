@@ -32,7 +32,7 @@
           <div class="plan-features">
             <div class="feature-item">
               <el-icon><Connection /></el-icon>
-              <span>{{ formatBytes(plan.transfer_enable) }} 流量</span>
+              <span>{{ formatTraffic(plan.transfer_enable) }} 流量</span>
             </div>
             <div v-if="plan.speed_limit" class="feature-item">
               <el-icon><Odometer /></el-icon>
@@ -113,7 +113,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPlanList } from '@/api/plan'
 import { createOrder } from '@/api/order'
-import { formatBytes, formatPrice } from '@/utils/helpers'
+import { formatTraffic, formatPrice } from '@/utils/helpers'
 import { ElMessage } from 'element-plus'
 import { Connection, Odometer, Checked } from '@element-plus/icons-vue'
 import Layout from '@/components/Layout.vue'

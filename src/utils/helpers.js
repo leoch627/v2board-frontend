@@ -15,6 +15,23 @@ export function formatBytes(bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
+// 格式化流量，支持通过环境变量指定输入单位（bytes/MB/GB）
+const TRAFFIC_UNIT = (import.meta.env.VITE_TRAFFIC_UNIT || 'bytes').toLowerCase()
+export function formatTraffic(amount) {
+  if (amount === undefined || amount === null || amount === '') return '0 Bytes'
+  const numeric = Number(amount)
+  if (Number.isNaN(numeric)) return '0 Bytes'
+
+  let bytes = numeric
+  if (TRAFFIC_UNIT === 'mb') {
+    bytes = numeric * 1024 * 1024
+  } else if (TRAFFIC_UNIT === 'gb') {
+    bytes = numeric * 1024 * 1024 * 1024
+  }
+
+  return formatBytes(bytes)
+}
+
 /**
  * 格式化日期
  * @param {Date|number|string} date - 日期对象、时间戳或日期字符串

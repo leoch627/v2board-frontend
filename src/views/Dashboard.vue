@@ -56,7 +56,7 @@
                 <div class="plan-features">
                   <div class="feature-item">
                     <el-icon><Connection /></el-icon>
-                    <span>{{ formatBytes(plan.transfer_enable) }} 流量</span>
+                    <span>{{ formatTraffic(plan.transfer_enable) }} 流量</span>
                   </div>
                   <div v-if="plan.speed_limit" class="feature-item">
                     <el-icon><Odometer /></el-icon>
@@ -258,7 +258,7 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { getSubscribe, resetSubscribe } from '@/api/user'
 import { getPlanList } from '@/api/plan'
-import { copyToClipboard, formatDate, formatBytes, formatPrice, isMobileDevice } from '@/utils/helpers'
+import { copyToClipboard, formatDate, formatTraffic, formatPrice, isMobileDevice } from '@/utils/helpers'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { 
   User, Link, DocumentCopy, Refresh, Menu, PictureRounded, ShoppingCart, Connection, Odometer

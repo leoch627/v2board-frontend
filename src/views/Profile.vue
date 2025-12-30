@@ -43,11 +43,11 @@
             <div class="traffic-details">
               <div class="detail-item">
                 <span class="detail-label">已用流量</span>
-                <span class="detail-value">{{ userStore.usedTraffic }} GB</span>
+                <span class="detail-value">{{ userStore.usedTraffic }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">总流量</span>
-                <span class="detail-value">{{ userStore.totalTraffic }} GB</span>
+                <span class="detail-value">{{ userStore.totalTraffic }}</span>
               </div>
               <div class="detail-item">
                 <span class="detail-label">到期时间</span>

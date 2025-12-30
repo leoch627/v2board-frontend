@@ -105,12 +105,12 @@
               <div class="traffic-display">
                 <div class="traffic-item">
                   <span class="traffic-label">已用流量</span>
-                  <span class="traffic-value">{{ userStore.usedTraffic }} GB</span>
+                  <span class="traffic-value">{{ userStore.usedTraffic }}</span>
                 </div>
                 <div class="traffic-divider">/</div>
                 <div class="traffic-item">
                   <span class="traffic-label">总流量</span>
-                  <span class="traffic-value">{{ userStore.totalTraffic }} GB</span>
+                  <span class="traffic-value">{{ userStore.totalTraffic }}</span>
                 </div>
               </div>
               <el-progress 
@@ -123,6 +123,12 @@
                 <span class="expire-value" :class="{ expired: userStore.isExpired }">
                   {{ expiredText }}
                 </span>
+              </div>
+              
+              <!-- Plan Description -->
+              <div v-if="currentPlan && currentPlan.content" class="plan-description">
+                <div class="plan-desc-title">套餐说明</div>
+                <div class="plan-desc-content">{{ currentPlan.content }}</div>
               </div>
             </div>
           </div>
@@ -263,10 +269,11 @@ const subscribeUrl = ref('')
 const qrcodeCanvas = ref(null)
 const isMobile = ref(false)
 const plans = ref([])
+const currentPlan = ref(null)
 
 // Check if user has a plan
 const hasPlan = computed(() => {
-  return userStore.stat?.plan_id && userStore.stat.plan_id > 0
+  return userStore.planId && userStore.planId > 0
 })
 
 // Preview plans (show first 3)
@@ -341,7 +348,7 @@ const userGreeting = computed(() => {
 
 // Plan name
 const planName = computed(() => {
-  return userStore.stat?.plan_name || '暂无套餐'
+  return userStore.planName
 })
 
 // Progress color
@@ -386,6 +393,22 @@ const fetchPlans = async () => {
     console.error('Fetch plans error:', error)
   } finally {
     loadingPlans.value = false
+  }
+}
+
+// Fetch current plan details
+const fetchCurrentPlan = async () => {
+  try {
+    // Get all plans
+    const data = await getPlanList()
+    plans.value = data || []
+    
+    // Find the user's current plan by plan_id
+    if (userStore.planId && plans.value.length > 0) {
+      currentPlan.value = plans.value.find(plan => plan.id === userStore.planId)
+    }
+  } catch (error) {
+    console.error('Fetch current plan error:', error)
   }
 }
 
@@ -510,8 +533,11 @@ onMounted(async () => {
     
     // Check if user has a plan
     if (hasPlan.value) {
-      // User has plan, fetch subscription info
-      await fetchSubscribe()
+      // User has plan, fetch subscription info and plan details
+      await Promise.all([
+        fetchSubscribe(),
+        fetchCurrentPlan()
+      ])
     } else {
       // User has no plan, fetch plans to display
       await fetchPlans()
@@ -826,6 +852,29 @@ onMounted(async () => {
 
 .expire-value.expired {
   color: #f56c6c;
+}
+
+.plan-description {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 107, 157, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid #FF6B9D;
+}
+
+.plan-desc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FF6B9D;
+  margin-bottom: 8px;
+}
+
+.plan-desc-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Subscription Card */

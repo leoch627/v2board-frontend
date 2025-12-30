@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getUserInfo, getUserStat } from '@/api/user'
+import { formatTraffic } from '@/utils/helpers'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -17,38 +18,42 @@ export const useUserStore = defineStore('user', {
     // 获取用户Token
     token: (state) => state.info?.token || '',
     
-    // 套餐名称
-    planName: (state) => state.stat?.plan_name || '暂无套餐',
+    // 套餐ID
+    planId: (state) => state.info?.plan_id || null,
     
-    // 已用流量 (GB)
+    // 套餐名称
+    planName: (state) => state.stat?.plan_name || state.info?.plan_name || '暂无套餐',
+    
+    // 已用流量（格式化为GB/TB）
     usedTraffic: (state) => {
-      if (!state.stat) return 0
-      return ((state.stat.u + state.stat.d) / 1073741824).toFixed(2)
+      if (!state.info) return '0 GB'
+      const used = (state.info.u || 0) + (state.info.d || 0)
+      return formatTraffic(used)
     },
     
-    // 总流量 (GB)
+    // 总流量（格式化为GB/TB）
     totalTraffic: (state) => {
-      if (!state.stat) return 0
-      return (state.stat.transfer_enable / 1073741824).toFixed(2)
+      if (!state.info || !state.info.transfer_enable) return '0 GB'
+      return formatTraffic(state.info.transfer_enable)
     },
     
     // 流量使用百分比
     trafficPercent: (state) => {
-      if (!state.stat || !state.stat.transfer_enable) return 0
-      const used = state.stat.u + state.stat.d
-      return Math.min(Math.round((used / state.stat.transfer_enable) * 100), 100)
+      if (!state.info || !state.info.transfer_enable) return 0
+      const used = (state.info.u || 0) + (state.info.d || 0)
+      return Math.min(Math.round((used / state.info.transfer_enable) * 100), 100)
     },
     
     // 到期时间
     expiredAt: (state) => {
-      if (!state.stat || !state.stat.expired_at) return null
-      return new Date(state.stat.expired_at * 1000)
+      if (!state.info || !state.info.expired_at) return null
+      return new Date(state.info.expired_at * 1000)
     },
     
     // 是否已过期
     isExpired: (state) => {
-      if (!state.stat || !state.stat.expired_at) return false
-      return Date.now() > state.stat.expired_at * 1000
+      if (!state.info || !state.info.expired_at) return false
+      return Date.now() > state.info.expired_at * 1000
     },
   },
   
@@ -57,6 +62,7 @@ export const useUserStore = defineStore('user', {
     async fetchUserInfo() {
       try {
         const data = await getUserInfo()
+        // 存储用户信息，API返回的数据已经包含所有信息
         this.info = data
         return data
       } catch (error) {
@@ -77,10 +83,15 @@ export const useUserStore = defineStore('user', {
     
     // 刷新所有用户数据
     async refreshAll() {
-      await Promise.all([
-        this.fetchUserInfo(),
-        this.fetchUserStat(),
-      ])
+      // 先获取用户信息，因为它包含了主要数据
+      await this.fetchUserInfo()
+      // 获取统计信息（如果API存在的话）
+      try {
+        await this.fetchUserStat()
+      } catch (error) {
+        // 如果getStat API不存在或失败，继续使用info中的数据
+        console.log('getStat API not available, using info data')
+      }
     },
   },
 })

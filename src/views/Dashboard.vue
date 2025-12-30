@@ -124,6 +124,12 @@
                   {{ expiredText }}
                 </span>
               </div>
+              
+              <!-- Plan Description -->
+              <div v-if="currentPlan && currentPlan.content" class="plan-description">
+                <div class="plan-desc-title">套餐说明</div>
+                <div class="plan-desc-content">{{ currentPlan.content }}</div>
+              </div>
             </div>
           </div>
         </AnimeCard>
@@ -263,6 +269,7 @@ const subscribeUrl = ref('')
 const qrcodeCanvas = ref(null)
 const isMobile = ref(false)
 const plans = ref([])
+const currentPlan = ref(null)
 
 // Check if user has a plan
 const hasPlan = computed(() => {
@@ -389,6 +396,22 @@ const fetchPlans = async () => {
   }
 }
 
+// Fetch current plan details
+const fetchCurrentPlan = async () => {
+  try {
+    // Get all plans
+    const data = await getPlanList()
+    plans.value = data || []
+    
+    // Find the user's current plan by plan_id
+    if (userStore.planId && plans.value.length > 0) {
+      currentPlan.value = plans.value.find(plan => plan.id === userStore.planId)
+    }
+  } catch (error) {
+    console.error('Fetch current plan error:', error)
+  }
+}
+
 // Get plan color
 const getPlanColor = (index) => {
   const colors = ['pink', 'purple', 'blue']
@@ -510,8 +533,11 @@ onMounted(async () => {
     
     // Check if user has a plan
     if (hasPlan.value) {
-      // User has plan, fetch subscription info
-      await fetchSubscribe()
+      // User has plan, fetch subscription info and plan details
+      await Promise.all([
+        fetchSubscribe(),
+        fetchCurrentPlan()
+      ])
     } else {
       // User has no plan, fetch plans to display
       await fetchPlans()
@@ -826,6 +852,29 @@ onMounted(async () => {
 
 .expire-value.expired {
   color: #f56c6c;
+}
+
+.plan-description {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 107, 157, 0.05);
+  border-radius: 12px;
+  border-left: 3px solid #FF6B9D;
+}
+
+.plan-desc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FF6B9D;
+  margin-bottom: 8px;
+}
+
+.plan-desc-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* Subscription Card */

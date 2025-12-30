@@ -21,3 +21,20 @@ app.use(router)
 app.use(ElementPlus)
 
 app.mount('#app')
+
+// 允许通过环境变量控制标题与 favicon
+const { VITE_APP_TITLE, VITE_APP_FAVICON } = import.meta.env
+if (VITE_APP_TITLE) {
+  document.title = VITE_APP_TITLE
+}
+if (VITE_APP_FAVICON) {
+  const existing = document.querySelector('link[rel="icon"]')
+  if (existing) {
+    existing.href = VITE_APP_FAVICON
+  } else {
+    const link = document.createElement('link')
+    link.rel = 'icon'
+    link.href = VITE_APP_FAVICON
+    document.head.appendChild(link)
+  }
+}

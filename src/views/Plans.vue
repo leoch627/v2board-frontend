@@ -112,7 +112,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getPlanList } from '@/api/plan'
-import { createOrder, checkoutOrder, getPaymentMethods } from '@/api/order'
+import { createOrder } from '@/api/order'
 import { formatBytes, formatPrice } from '@/utils/helpers'
 import { ElMessage } from 'element-plus'
 import { Connection, Odometer, Checked } from '@element-plus/icons-vue'
@@ -189,9 +189,14 @@ const handleConfirmPurchase = async () => {
     
     ElMessage.success('订单创建成功！')
     
-    // 跳转到订单列表
+    // 跳转到订单详情便于支付
     showPurchaseDialog.value = false
-    router.push('/orders')
+    const tradeNo = order?.trade_no || order?.data?.trade_no
+    if (tradeNo) {
+      router.push(`/orders/${tradeNo}`)
+    } else {
+      router.push('/orders')
+    }
     
   } catch (error) {
     console.error('Purchase error:', error)

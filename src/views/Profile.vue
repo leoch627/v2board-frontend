@@ -79,19 +79,15 @@
               <span class="info-label">UUID</span>
               <span class="info-value">{{ userStore.uuid }}</span>
             </div>
-            <div class="info-item">
-              <span class="info-label">Token</span>
-              <el-input
-                :model-value="userStore.token"
-                readonly
-                class="token-input"
+            <div class="info-actions">
+              <el-button 
+                type="primary" 
+                plain 
+                :loading="resettingSubscribe"
+                @click="handleResetSubscribe"
               >
-                <template #append>
-                  <el-button @click="copyToken">
-                    <el-icon><DocumentCopy /></el-icon>
-                  </el-button>
-                </template>
-              </el-input>
+                重置订阅地址
+              </el-button>
             </div>
           </div>
         </AnimeCard>
@@ -156,10 +152,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { changePassword } from '@/api/user'
-import { formatDate, getRemainingDays, copyToClipboard } from '@/utils/helpers'
+import { changePassword, resetSubscribe } from '@/api/user'
+import { formatDate, getRemainingDays } from '@/utils/helpers'
 import { ElMessage } from 'element-plus'
-import { DataAnalysis, User, Lock, DocumentCopy } from '@element-plus/icons-vue'
+import { DataAnalysis, User, Lock } from '@element-plus/icons-vue'
 import Layout from '@/components/Layout.vue'
 import AnimeCard from '@/components/AnimeCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -169,6 +165,7 @@ const userStore = useUserStore()
 const loading = ref(true)
 const changingPassword = ref(false)
 const passwordFormRef = ref(null)
+const resettingSubscribe = ref(false)
 
 const passwordForm = ref({
   old_password: '',
@@ -217,16 +214,6 @@ const remainingDays = computed(() => {
   return getRemainingDays(userStore.expiredAt)
 })
 
-// 复制 Token
-const copyToken = async () => {
-  const success = await copyToClipboard(userStore.token)
-  if (success) {
-    ElMessage.success('Token 已复制')
-  } else {
-    ElMessage.error('复制失败')
-  }
-}
-
 // 修改密码
 const handleChangePassword = async () => {
   if (!passwordFormRef.value) return
@@ -254,6 +241,20 @@ const handleChangePassword = async () => {
       }
     }
   })
+}
+
+// 重置订阅地址
+const handleResetSubscribe = async () => {
+  try {
+    resettingSubscribe.value = true
+    await resetSubscribe()
+    await userStore.fetchSubscribe()
+    ElMessage.success('订阅地址已重置')
+  } catch (error) {
+    ElMessage.error('重置订阅失败')
+  } finally {
+    resettingSubscribe.value = false
+  }
 }
 
 onMounted(async () => {

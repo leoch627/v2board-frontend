@@ -158,49 +158,56 @@
             </el-input>
           </div>
 
-          <!-- QR Code -->
-          <div class="qrcode-section">
-            <label class="section-label">扫码订阅</label>
-            <div class="qrcode-box">
-              <canvas 
-                ref="qrcodeCanvas" 
-                class="qrcode-canvas"
-                role="img"
-                :aria-label="`订阅地址二维码: ${subscribeUrl}`"
-              ></canvas>
-            </div>
-          </div>
-
           <!-- Import Buttons -->
           <div class="import-section">
             <label class="section-label">一键导入</label>
-            
-            <!-- Desktop/Tablet Clients -->
-            <div v-if="!isMobile" class="client-buttons desktop-clients">
+            <div class="client-buttons">
               <el-button 
-                v-for="client in desktopClients" 
-                :key="client.name"
-                class="client-button anime-button"
-                @click="handleImport(client)"
+                class="client-button anime-button qr-button"
+                @click="showQr = !showQr"
               >
-                <span class="client-icon">{{ client.icon }}</span>
-                <span>{{ client.name }}</span>
+                <span class="client-icon">
+                  <el-icon><PictureRounded /></el-icon>
+                </span>
+                <span>查看二维码</span>
               </el-button>
-            </div>
-
-            <!-- Mobile Clients -->
-            <div v-else class="client-buttons mobile-clients">
               <el-button 
-                v-for="client in mobileClients" 
+                v-for="client in visibleClients" 
                 :key="client.name"
                 class="client-button anime-button"
                 @click="handleImport(client)"
               >
-                <span class="client-icon">{{ client.icon }}</span>
+                <span class="client-icon">
+                  <img v-if="client.img" :src="client.img" alt="" class="client-img" />
+                  <span v-else>{{ client.icon }}</span>
+                </span>
                 <span>{{ client.name }}</span>
               </el-button>
             </div>
           </div>
+
+          <el-dialog
+            v-model="showQr"
+            width="360px"
+            :close-on-click-modal="true"
+            :show-close="true"
+            class="qr-dialog"
+            append-to-body
+            center
+          >
+            <div class="qr-dialog-body">
+              <div class="qr-dialog-title">订阅二维码</div>
+              <div class="qr-dialog-hint">使用手机相机或支持扫码的客户端扫描</div>
+              <div class="qrcode-box dialog">
+                <canvas 
+                  ref="qrcodeCanvas" 
+                  class="qrcode-canvas"
+                  role="img"
+                  :aria-label="`订阅地址二维码: ${subscribeUrl}`"
+                ></canvas>
+              </div>
+            </div>
+          </el-dialog>
 
           <!-- Reset Subscription -->
           <div class="reset-section">
@@ -247,7 +254,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { getSubscribe, resetSubscribe } from '@/api/user'
 import { getPlanList } from '@/api/plan'
@@ -268,6 +275,7 @@ const loadingPlans = ref(false)
 const subscribeUrl = ref('')
 const qrcodeCanvas = ref(null)
 const isMobile = ref(false)
+const showQr = ref(false)
 const plans = ref([])
 const currentPlan = ref(null)
 
@@ -281,39 +289,31 @@ const previewPlans = computed(() => {
   return plans.value.slice(0, 3)
 })
 
-// Desktop/Tablet clients
+// Visible clients by device
+const visibleClients = computed(() => (isMobile.value ? mobileClients : desktopClients))
+
+// Desktop/Tablet clients（仅 PC 展示）
 const desktopClients = [
   {
-    name: 'Clash',
-    icon: '⚡',
-    scheme: 'clash://install-config?url=',
-    urlScheme: true
-  },
-  {
-    name: 'Clash Verge',
-    icon: '🌟',
+    name: 'Clash Party',
+    icon: '🎉',
     scheme: 'clash-verge://install-config?url=',
     urlScheme: true
   },
   {
     name: 'Mihomo Party',
-    icon: '🎉',
+    icon: '🌟',
     scheme: 'mihomo://install-config?url=',
     urlScheme: true
-  },
-  {
-    name: 'V2rayN',
-    icon: '🚀',
-    scheme: null,
-    manual: true
   }
 ]
 
-// Mobile clients
+// Mobile clients（仅移动端展示）
 const mobileClients = [
   {
     name: 'Shadowrocket',
     icon: '🔥',
+    img: '/assets/Shadowrocket.webp',
     scheme: 'shadowrocket://add/sub://',
     needsEncode: true
   },
@@ -326,13 +326,8 @@ const mobileClients = [
   {
     name: 'Hiddify',
     icon: '🔐',
+    img: '/assets/Hiddify.webp',
     scheme: 'hiddify://import/',
-    needsEncode: false
-  },
-  {
-    name: 'Clash Meta',
-    icon: '⚡',
-    scheme: 'clash://install-config?url=',
     needsEncode: false
   }
 ]
@@ -371,12 +366,6 @@ const fetchSubscribe = async () => {
   try {
     const data = await getSubscribe()
     subscribeUrl.value = data.subscribe_url || data.url || ''
-    
-    // Generate QR code
-    await nextTick()
-    if (qrcodeCanvas.value && subscribeUrl.value) {
-      await generateQRCode()
-    }
   } catch (error) {
     console.error('Fetch subscribe error:', error)
     ElMessage.error('加载订阅信息失败')
@@ -421,6 +410,7 @@ const getPlanColor = (index) => {
 // Generate QR code
 const generateQRCode = async () => {
   try {
+    if (!showQr.value || !subscribeUrl.value || !qrcodeCanvas.value) return
     await QRCode.toCanvas(qrcodeCanvas.value, subscribeUrl.value, {
       width: 200,
       margin: 2,
@@ -433,6 +423,14 @@ const generateQRCode = async () => {
     console.error('Generate QR code error:', error)
   }
 }
+
+// Re-render QR when URL or visibility changes
+watch([showQr, subscribeUrl], async ([visible, url]) => {
+  if (visible && url) {
+    await nextTick()
+    await generateQRCode()
+  }
+})
 
 // Handle copy
 const handleCopy = async () => {
@@ -913,19 +911,18 @@ onMounted(async () => {
   background: linear-gradient(135deg, #FFA8D5, #FF6B9D);
 }
 
-.qrcode-section {
-  margin-bottom: 24px;
-}
-
 .qrcode-box {
   display: flex;
   justify-content: center;
-  padding: 16px;
-  background: white;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
   border-radius: 12px;
 }
 
 .qrcode-canvas {
+  width: 180px;
+  height: 180px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(255, 107, 157, 0.2);
 }
@@ -939,25 +936,58 @@ onMounted(async () => {
   gap: 12px;
 }
 
-.desktop-clients {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.mobile-clients {
-  grid-template-columns: repeat(2, 1fr);
-}
-
 .client-button {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   height: 48px;
-  font-weight: 600;
 }
 
 .client-icon {
-  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+}
+
+.client-img {
+  width: 22px;
+  height: 22px;
+  max-width: 22px;
+  max-height: 22px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.qr-dialog :deep(.el-dialog__header) {
+  margin: 0;
+  padding: 12px 16px 0;
+}
+
+.qr-dialog :deep(.el-dialog__body) {
+  padding: 8px 16px 20px;
+}
+
+.qr-dialog-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.qr-dialog-title {
+  font-weight: 700;
+  font-size: 18px;
+  color: #333;
+}
+
+.qr-dialog-hint {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 4px;
 }
 
 .reset-section {

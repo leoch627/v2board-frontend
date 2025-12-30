@@ -98,7 +98,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getOrderDetail, cancelOrder } from '@/api/order'
+import { getOrderDetail, cancelOrder, getPaymentMethods, checkoutOrder } from '@/api/order'
 import { formatDate, formatPrice, formatBytes, getOrderStatusText, getOrderStatusType } from '@/utils/helpers'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
@@ -111,7 +111,6 @@ const router = useRouter()
 
 const loading = ref(true)
 const order = ref(null)
-const selectedPaymentMethod = ref(null)
 
 // 获取订单详情
 const fetchOrderDetail = async () => {
@@ -144,32 +143,30 @@ const getPeriodText = (period) => {
 // 处理支付
 const handlePay = async () => {
   try {
-    // Fetch payment methods first
-    const { getPaymentMethods, checkoutOrder } = await import('@/api/order')
     const methods = await getPaymentMethods()
-    
     if (!methods || methods.length === 0) {
       ElMessage.warning('暂无可用的支付方式')
       return
     }
-    
-    // Show payment method selection dialog
-    const options = methods.map(m => {
-      // HTML escape the method name to prevent XSS
-      const escapedName = String(m.name).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
-      return `<label style="display: block; margin: 10px 0;">
-        <input type="radio" name="payment" value="${m.id}" data-method-id="${m.id}" ${m.id === methods[0].id ? 'checked' : ''}> 
-        ${escapedName}
+
+    let selected = methods[0]?.id
+    const options = methods.map((m) => {
+      const name = String(m.name)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+      return `<label style="display:block;margin:10px 0;">
+        <input type="radio" name="payment" value="${m.id}" ${m.id === selected ? 'checked' : ''}>
+        ${name}
       </label>`
     }).join('')
-    
-    // Initialize selected method with first method
-    selectedPaymentMethod.value = methods[0]?.id
-    
-    const result = await ElMessageBox.confirm(
-      `<div style="text-align: left;">
-        <p style="margin-bottom: 15px;">请选择支付方式：</p>
-        <form id="payment-form" onchange="document.dispatchEvent(new CustomEvent('paymentMethodChanged', {detail: {value: event.target.value}}))">${options}</form>
+
+    await ElMessageBox.confirm(
+      `<div style="text-align:left;">
+        <p style="margin-bottom:12px;">请选择支付方式：</p>
+        <form id="payment-form">${options}</form>
       </div>`,
       '选择支付方式',
       {
@@ -178,51 +175,55 @@ const handlePay = async () => {
         dangerouslyUseHTMLString: true,
         beforeClose: (action, instance, done) => {
           if (action === 'confirm') {
-            const selected = document.querySelector('input[name="payment"]:checked')
-            if (selected) {
-              selectedPaymentMethod.value = parseInt(selected.value)
+            const radio = document.querySelector('input[name="payment"]:checked')
+            if (radio) {
+              selected = parseInt(radio.value)
             }
           }
           done()
-        }
+        },
       }
     )
-    
-    // Use the reactive variable instead of querying DOM
-    if (!selectedPaymentMethod.value) {
+
+    if (!selected) {
       ElMessage.error('请选择支付方式')
       return
     }
-    
-    // Checkout order
-    const checkoutResult = await checkoutOrder({
-      trade_no: order.value.trade_no,
-      method: selectedPaymentMethod.value
-    })
-    
-    // Handle payment result
-    if (checkoutResult.type === 0) {
-      // QR code payment
-      ElMessageBox.alert(
-        `<div style="text-align: center;">
-          <p style="margin-bottom: 15px;">请使用支付宝/微信扫码支付</p>
-          <img src="${checkoutResult.data}" style="max-width: 300px;" />
+
+    const res = await checkoutOrder({ trade_no: order.value.trade_no, method: selected })
+
+    if (res?.type === 0) {
+      await ElMessageBox.alert(
+        `<div style="text-align:center;">
+          <p style="margin-bottom:12px;">请使用支付工具扫码</p>
+          <img src="${res.data}" style="max-width:260px;" />
         </div>`,
         '扫码支付',
-        {
-          dangerouslyUseHTMLString: true,
-          confirmButtonText: '已完成支付'
-        }
-      ).then(() => {
-        fetchOrderDetail() // Refresh order status
-      })
-    } else if (checkoutResult.type === 1) {
-      // Redirect payment
-      window.location.href = checkoutResult.data
-    } else {
-      ElMessage.success('支付请求已提交')
+        { dangerouslyUseHTMLString: true, confirmButtonText: '已完成支付' }
+      )
       fetchOrderDetail()
+      return
     }
+
+    const redirectUrl = res?.data?.url || res?.data || res?.url || res?.redirect_url
+    if (res?.type === 1 || redirectUrl) {
+      if (redirectUrl) {
+        await ElMessageBox.alert(
+          `<div style="text-align:left;">
+            <p style="margin-bottom:8px;">点击下方按钮跳转支付（如被拦截可右键在新标签打开）：</p>
+            <p><a href="${redirectUrl}" target="_blank" rel="noopener" style="display:inline-block;padding:10px 14px;background:#409EFF;color:#fff;border-radius:6px;text-decoration:none;">前往支付</a></p>
+            <p style="word-break:break-all;color:#666;font-size:12px;">${redirectUrl}</p>
+          </div>`,
+          '前往支付',
+          { dangerouslyUseHTMLString: true, confirmButtonText: '我已打开支付页' }
+        )
+        fetchOrderDetail()
+        return
+      }
+    }
+
+    ElMessage.success('支付请求已提交')
+    fetchOrderDetail()
   } catch (error) {
     if (error !== 'cancel') {
       console.error('Payment error:', error)

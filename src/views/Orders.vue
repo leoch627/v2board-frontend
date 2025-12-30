@@ -114,6 +114,31 @@ const loading = ref(true)
 const orders = ref([])
 const paying = ref(false)
 
+// 解析后端返回的跳转链接，优先保持原始编码，避免破坏 query/hash
+const resolveRedirectUrl = (res) => {
+  const normalize = (value) => {
+    if (typeof value !== 'string') return ''
+    const trimmed = value.trim()
+    return trimmed
+  }
+
+  const candidates = [
+    res?.data?.url,
+    res?.data?.data,
+    res?.data,
+    res?.url,
+    res?.redirect_url,
+    res?.redirectUrl,
+    res,
+  ]
+
+  for (const item of candidates) {
+    const resolved = normalize(item)
+    if (resolved) return resolved
+  }
+  return ''
+}
+
 // 获取订单列表
 const fetchOrders = async () => {
   try {
@@ -197,10 +222,10 @@ const handlePay = async (order) => {
     }
 
     const res = await checkoutOrder({ trade_no: order.trade_no, method: selected })
+    console.log('checkout response', res)
 
-    // 支付结果分支
-    if (res?.type === 0) {
-      // 二维码
+    // 二维码
+    if (res?.type === 0 && res?.data) {
       await ElMessageBox.alert(
         `<div style="text-align:center;">
           <p style="margin-bottom:12px;">请使用支付工具扫码</p>
@@ -213,10 +238,12 @@ const handlePay = async (order) => {
       return
     }
 
-    // 跳转支付（兼容后端返回 data/url/redirect_url 等字段）
-    const redirectUrl = res?.data?.url || res?.data || res?.url || res?.redirect_url
-    if (res?.type === 1 || redirectUrl) {
-      if (redirectUrl) {
+    // 跳转
+    const redirectUrl = resolveRedirectUrl(res)
+
+    if ((res?.type === 1 || redirectUrl) && redirectUrl) {
+      const opened = window.open(redirectUrl, '_blank')
+      if (!opened) {
         await ElMessageBox.alert(
           `<div style="text-align:left;">
             <p style="margin-bottom:8px;">点击下方按钮跳转支付（如被拦截可右键在新标签打开）：</p>
@@ -226,13 +253,12 @@ const handlePay = async (order) => {
           '前往支付',
           { dangerouslyUseHTMLString: true, confirmButtonText: '我已打开支付页' }
         )
-        fetchOrders()
-        return
       }
+      fetchOrders()
+      return
     }
 
-    ElMessage.success('支付请求已提交')
-    fetchOrders()
+    ElMessage.warning(`未获取到支付链接，请重试或联系管理员。响应: ${JSON.stringify(res || {})}`)
   } catch (error) {
     if (error !== 'cancel') {
       console.error('Payment error:', error)

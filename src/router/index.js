@@ -67,6 +67,19 @@ const router = createRouter({
 // 路由守卫
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
+
+  // 支付回跳使用了 hash 片段（#/order/:id?...），在 history 路由下会落在根路径，需手动处理
+  const hash = window.location.hash || ''
+  if (hash.startsWith('#/order/')) {
+    next('/dashboard')
+    return
+  }
+
+  // 兼容部分网关/后端用 query 带回交易参数（无 hash），统一导回前端 dashboard
+  if (to.query?.trade_status || to.query?.out_trade_no || to.query?.trade_no) {
+    next('/dashboard')
+    return
+  }
   
   // 检查路由是否需要认证
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {

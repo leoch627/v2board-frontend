@@ -105,12 +105,12 @@
               <div class="traffic-display">
                 <div class="traffic-item">
                   <span class="traffic-label">已用流量</span>
-                  <span class="traffic-value">{{ userStore.usedTraffic }} GB</span>
+                  <span class="traffic-value">{{ userStore.usedTraffic }}</span>
                 </div>
                 <div class="traffic-divider">/</div>
                 <div class="traffic-item">
                   <span class="traffic-label">总流量</span>
-                  <span class="traffic-value">{{ userStore.totalTraffic }} GB</span>
+                  <span class="traffic-value">{{ userStore.totalTraffic }}</span>
                 </div>
               </div>
               <el-progress 
@@ -266,7 +266,7 @@ const plans = ref([])
 
 // Check if user has a plan
 const hasPlan = computed(() => {
-  return userStore.stat?.plan_id && userStore.stat.plan_id > 0
+  return userStore.info?.plan_id && userStore.info.plan_id > 0
 })
 
 // Preview plans (show first 3)
@@ -341,7 +341,7 @@ const userGreeting = computed(() => {
 
 // Plan name
 const planName = computed(() => {
-  return userStore.stat?.plan_name || '暂无套餐'
+  return userStore.stat?.plan_name || userStore.info?.plan_name || '暂无套餐'
 })
 
 // Progress color

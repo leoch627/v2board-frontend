@@ -168,3 +168,23 @@ export function isMobileDevice() {
   
   return mobileRegex.test(userAgent.toLowerCase()) || isMobileScreen
 }
+
+/**
+ * 格式化流量显示（GB/TB单位）
+ * @param {number} bytes - 字节数
+ * @param {number} decimals - 小数位数
+ */
+export function formatTraffic(bytes, decimals = 2) {
+  if (!bytes || bytes === 0) return '0 GB'
+  
+  const GB = 1073741824 // 1024^3
+  const gb = bytes / GB
+  
+  // 如果大于1024GB，使用TB单位
+  if (gb > 1024) {
+    const tb = gb / 1024
+    return tb.toFixed(decimals) + ' TB'
+  }
+  
+  return gb.toFixed(decimals) + ' GB'
+}

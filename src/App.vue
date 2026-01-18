@@ -25,7 +25,7 @@
 
 body {
   font-family: 'Noto Sans SC', 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #FFF0F5 0%, #E0B0FF 100%);
+  background: #fff;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -62,11 +62,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #FFA8D5, #E0B0FF);
+  background: linear-gradient(135deg, #60A5FA, #38BDF8);
 }
 </style>

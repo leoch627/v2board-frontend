@@ -269,14 +269,14 @@ onMounted(() => {
 
 .currency {
   font-size: 24px;
-  color: #FF6B9D;
+  color: #3B82F6;
   font-weight: 600;
 }
 
 .amount {
   font-size: 48px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -292,8 +292,8 @@ onMounted(() => {
   flex-direction: column;
   gap: 16px;
   padding: 24px 0;
-  border-top: 1px solid rgba(255, 107, 157, 0.1);
-  border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .feature-item {
@@ -330,7 +330,7 @@ onMounted(() => {
 .price-text {
   font-size: 32px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -341,7 +341,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 12px;
   margin-top: 24px;
   font-size: 18px;

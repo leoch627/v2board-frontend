@@ -394,7 +394,7 @@ onMounted(() => {
 
 .order-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 107, 157, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
   margin: 20px 0;
 }
 
@@ -424,7 +424,7 @@ onMounted(() => {
 .price-value {
   font-size: 18px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

@@ -1,12 +1,11 @@
 <template>
-  <nav class="anime-navbar glass-effect">
+  <nav class="app-navbar">
     <div class="navbar-container">
       <div class="navbar-brand">
         <router-link to="/" class="brand-link">
           <div class="brand-logo">
-            <span class="text-gradient-pink">✨</span>
+            LeiterUp
           </div>
-          <span class="brand-text text-gradient-pink">V2Board</span>
         </router-link>
       </div>
       
@@ -25,7 +24,7 @@
         </router-link>
         <router-link to="/profile" class="nav-item" active-class="active">
           <el-icon><User /></el-icon>
-          <span>个人中心</span>
+          <span>账户</span>
         </router-link>
         <button @click="handleLogout" class="nav-item logout-btn">
           <el-icon><SwitchButton /></el-icon>
@@ -60,22 +59,25 @@ const handleLogout = async () => {
 </script>
 
 <style scoped>
-.anime-navbar {
+.app-navbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
-  padding: 16px 0;
-  margin-bottom: 32px;
-  animation: slide-in-top 0.5s ease-out;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  height: 60px;
 }
 
 .navbar-container {
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 40px;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .navbar-brand {
@@ -84,83 +86,75 @@ const handleLogout = async () => {
 }
 
 .brand-link {
+  text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  text-decoration: none;
-  transition: transform 0.3s ease;
-}
-
-.brand-link:hover {
-  transform: scale(1.05);
+  gap: 8px;
 }
 
 .brand-logo {
-  font-size: 32px;
-  animation: float 3s ease-in-out infinite;
-}
-
-.brand-text {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1d1d1f;
+  letter-spacing: -0.01em;
 }
 
 .navbar-menu {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 24px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 16px;
-  border-radius: 12px;
   text-decoration: none;
-  color: #666;
+  font-size: 13px;
+  color: #424245;
   font-weight: 500;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  background: transparent;
+  transition: all 0.2s ease;
+  background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  padding: 6px 0;
 }
 
-.nav-item:hover {
-  background: rgba(255, 107, 157, 0.1);
-  color: #FF6B9D;
-  transform: translateY(-2px);
-}
-
+.nav-item:hover,
 .nav-item.active {
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
-  color: white;
-  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
-}
-
-.logout-btn {
-  margin-left: 8px;
+  color: #0071e3;
+  background: transparent;
+  transform: none;
+  box-shadow: none;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 107, 157, 0.1);
-  color: #FF6B9D;
+  color: #ff3b30;
+  background: transparent;
 }
 
 @media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 20px;
+  }
+  
   .navbar-menu {
-    flex-wrap: wrap;
-    gap: 4px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 10px 0 20px;
+    justify-content: space-around;
+    gap: 0;
   }
-  
-  .nav-item span {
-    display: none;
-  }
-  
+
   .nav-item {
-    padding: 10px;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
   }
 }
 </style>

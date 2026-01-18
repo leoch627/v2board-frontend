@@ -339,7 +339,7 @@ onMounted(async () => {
 
 .progress-bg {
   fill: none;
-  stroke: rgba(255, 107, 157, 0.1);
+  stroke: rgba(59, 130, 246, 0.1);
   stroke-width: 8;
 }
 
@@ -364,7 +364,7 @@ onMounted(async () => {
   display: block;
   font-size: 36px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -387,7 +387,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .detail-item:last-child {
@@ -411,7 +411,7 @@ onMounted(async () => {
 }
 
 .detail-value.highlight {
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

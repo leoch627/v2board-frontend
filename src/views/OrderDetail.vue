@@ -296,7 +296,7 @@ onMounted(() => {
 }
 
 .back-button {
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
   color: white;
   border: none;
   transition: all 0.3s ease;

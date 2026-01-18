@@ -142,7 +142,7 @@ const generateQRCode = async () => {
       width: 250,
       margin: 2,
       color: {
-        dark: '#FF6B9D',
+        dark: '#3B82F6',
         light: '#FFFFFF',
       },
     })
@@ -250,14 +250,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
   color: white;
   border: none;
   transition: all 0.3s ease;
 }
 
 .copy-btn:hover {
-  background: linear-gradient(135deg, #FFA8D5, #FF6B9D);
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
 }
 
 .subscribe-actions {
@@ -276,7 +276,7 @@ onMounted(() => {
 
 .qrcode-canvas {
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
 }
 
 .qrcode-tip {
@@ -294,7 +294,7 @@ onMounted(() => {
 .client-item {
   text-align: center;
   padding: 24px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 16px;
   transition: all 0.3s ease;
 }

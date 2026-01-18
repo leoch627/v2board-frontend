@@ -7,36 +7,31 @@ export default {
   theme: {
     extend: {
       colors: {
-        anime: {
-          pink: '#FF6B9D',
-          'pink-light': '#FFA8D5',
-          purple: '#C77DFF',
-          'purple-light': '#E0B0FF',
-          blue: '#89CFF0',
-          bg: '#FFF0F5',
-        }
+        // Removed anime colors, keeping standard palette or adding professional ones if needed
+        primary: '#0071e3', // Apple Blue
+        secondary: '#86868b', // Apple Grey
+        success: '#34c759', // Apple Green
+        warning: '#ff9f0a', // Apple Orange
+        danger: '#ff3b30', // Apple Red
+        background: '#fbfbfd', // Apple Background
       },
       borderRadius: {
-        'anime': '20px',
-        'anime-lg': '30px',
+        // Standard professional radii
+        'xl': '12px',
+        '2xl': '18px',
+        '3xl': '24px',
       },
       boxShadow: {
-        'anime': '0 8px 32px 0 rgba(255, 107, 157, 0.2)',
-        'anime-hover': '0 12px 40px 0 rgba(255, 107, 157, 0.3)',
+        'card': '0 4px 12px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 8px 24px rgba(0, 0, 0, 0.08)',
       },
       animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'sparkle': 'sparkle 2s ease-in-out infinite',
-        'bounce-slow': 'bounce 2s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.5s ease-out',
       },
       keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
-        },
-        sparkle: {
-          '0%, 100%': { opacity: '0' },
-          '50%': { opacity: '1' },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
       },
     },

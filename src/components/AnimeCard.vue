@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-card" :class="[hoverEffect && 'anime-card-hover', customClass]">
+  <div class="app-card" :class="[hoverEffect && 'app-card-hover', customClass]">
     <slot></slot>
   </div>
 </template>
@@ -8,7 +8,7 @@
 defineProps({
   hoverEffect: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   customClass: {
     type: String,
@@ -18,33 +18,17 @@ defineProps({
 </script>
 
 <style scoped>
-.anime-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 20px;
+.app-card {
+  background: #ffffff;
+  border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 8px 32px 0 rgba(255, 107, 157, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.anime-card::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #FF6B9D, #C77DFF, #89CFF0, #FFA8D5);
-  border-radius: 20px;
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s ease;
-}
-
-.anime-card-hover:hover::before {
-  opacity: 0.3;
+.app-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 </style>

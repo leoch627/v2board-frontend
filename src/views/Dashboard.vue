@@ -351,7 +351,7 @@ const progressColor = computed(() => {
   const percent = userStore.trafficPercent
   if (percent >= 90) return '#f56c6c'
   if (percent >= 70) return '#e6a23c'
-  return '#FF6B9D'
+  return '#3B82F6'
 })
 
 // Expired text
@@ -625,7 +625,7 @@ onMounted(async () => {
 .preview-title {
   font-size: 28px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -656,11 +656,11 @@ onMounted(async () => {
 }
 
 .gradient-pink {
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
 }
 
 .gradient-purple {
-  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+  background: linear-gradient(135deg, #0EA5E9, #38BDF8);
 }
 
 .gradient-blue {
@@ -676,14 +676,14 @@ onMounted(async () => {
 
 .currency {
   font-size: 20px;
-  color: #FF6B9D;
+  color: #3B82F6;
   font-weight: 600;
 }
 
 .amount {
   font-size: 40px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -699,8 +699,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 12px;
   padding: 20px 0;
-  border-top: 1px solid rgba(255, 107, 157, 0.1);
-  border-bottom: 1px solid rgba(255, 107, 157, 0.1);
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .feature-item {
@@ -720,13 +720,13 @@ onMounted(async () => {
 }
 
 .anime-button-pink {
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
   border: none;
   color: white;
 }
 
 .anime-button-purple {
-  background: linear-gradient(135deg, #C77DFF, #E0B0FF);
+  background: linear-gradient(135deg, #0EA5E9, #38BDF8);
   border: none;
   color: white;
 }
@@ -771,7 +771,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 12px;
 }
 
@@ -798,7 +798,7 @@ onMounted(async () => {
   align-items: baseline;
   gap: 12px;
   padding: 16px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 12px;
 }
 
@@ -817,7 +817,7 @@ onMounted(async () => {
 .traffic-value {
   font-size: 20px;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D, #C77DFF);
+  background: linear-gradient(135deg, #3B82F6, #0EA5E9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -834,7 +834,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 12px;
   font-size: 14px;
 }
@@ -855,15 +855,15 @@ onMounted(async () => {
 .plan-description {
   margin-top: 16px;
   padding: 16px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 12px;
-  border-left: 3px solid #FF6B9D;
+  border-left: 3px solid #3B82F6;
 }
 
 .plan-desc-title {
   font-size: 14px;
   font-weight: 600;
-  color: #FF6B9D;
+  color: #3B82F6;
   margin-bottom: 8px;
 }
 
@@ -901,14 +901,14 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #FF6B9D, #FFA8D5);
+  background: linear-gradient(135deg, #3B82F6, #60A5FA);
   color: white;
   border: none;
   transition: all 0.3s ease;
 }
 
 .copy-btn:hover {
-  background: linear-gradient(135deg, #FFA8D5, #FF6B9D);
+  background: linear-gradient(135deg, #60A5FA, #3B82F6);
 }
 
 .qrcode-box {
@@ -924,7 +924,7 @@ onMounted(async () => {
   width: 180px;
   height: 180px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(255, 107, 157, 0.2);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .import-section {
@@ -992,7 +992,7 @@ onMounted(async () => {
 
 .reset-section {
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 107, 157, 0.1);
+  border-top: 1px solid rgba(59, 130, 246, 0.1);
 }
 
 .reset-button {
@@ -1017,7 +1017,7 @@ onMounted(async () => {
   justify-content: center;
   gap: 12px;
   padding: 24px;
-  background: rgba(255, 107, 157, 0.05);
+  background: rgba(59, 130, 246, 0.05);
   border-radius: 16px;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -1025,7 +1025,7 @@ onMounted(async () => {
 }
 
 .action-item:hover {
-  background: rgba(255, 107, 157, 0.1);
+  background: rgba(59, 130, 246, 0.1);
   transform: translateY(-3px);
 }
 

@@ -1,10 +1,5 @@
 <template>
-  <div class="anime-layout">
-    <!-- 背景装饰 -->
-    <div class="bg-decoration">
-      <div class="star anime-star" v-for="i in 20" :key="i" :style="getStarStyle(i)"></div>
-    </div>
-    
+  <div class="app-layout">
     <!-- 导航栏 -->
     <Navbar />
     
@@ -16,9 +11,9 @@
     </main>
     
     <!-- 页脚 -->
-    <footer class="anime-footer">
+    <footer class="app-footer">
       <p class="footer-text">
-        Made with <span class="text-gradient-pink">❤</span> by V2Board
+        &copy; {{ new Date().getFullYear() }} LeiterUp. All rights reserved.
       </p>
     </footer>
   </div>
@@ -26,72 +21,44 @@
 
 <script setup>
 import Navbar from './Navbar.vue'
-
-// 生成随机星星样式
-const getStarStyle = (index) => {
-  const top = Math.random() * 100
-  const left = Math.random() * 100
-  const delay = Math.random() * 3
-  const duration = 2 + Math.random() * 2
-  
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    animationDelay: `${delay}s`,
-    animationDuration: `${duration}s`,
-  }
-}
 </script>
 
 <style scoped>
-.anime-layout {
+.app-layout {
   min-height: 100vh;
   position: relative;
-}
-
-.bg-decoration {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.star {
-  position: absolute;
+  background-color: #fbfbfd; /* Apple-like background */
 }
 
 .main-content {
   position: relative;
   z-index: 1;
-  min-height: calc(100vh - 200px);
+  min-height: calc(100vh - 120px);
   padding-bottom: 60px;
 }
 
 .content-container {
-  max-width: 1200px;
+  max-width: 1080px; /* Reduced width for better reading experience, typical of modern dashboards */
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 40px;
 }
 
-.anime-footer {
+.app-footer {
   position: relative;
   z-index: 1;
-  padding: 24px;
+  padding: 32px 0 48px;
   text-align: center;
 }
 
 .footer-text {
-  color: #666;
-  font-size: 14px;
-  font-weight: 500;
+  color: #86868b;
+  font-size: 13px;
+  font-weight: 400;
 }
 
 @media (max-width: 768px) {
   .content-container {
-    padding: 0 16px;
+    padding: 0 20px;
   }
 }
 </style>

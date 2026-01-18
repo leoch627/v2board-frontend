@@ -1,36 +1,36 @@
-/* 二次元动画效果 */
+/* 简约动画效果 (原二次元动画替换) */
 
-/* 浮动动画 */
+/* 浮动动画 - 极度微弱 */
 @keyframes float {
   0%, 100% { 
     transform: translateY(0px); 
   }
   50% { 
-    transform: translateY(-10px); 
+    transform: translateY(-4px); 
   }
 }
 
-/* 闪烁动画 */
+/* 闪烁动画 - 移除或改为微弱渐变 */
 @keyframes sparkle {
   0%, 100% { 
-    opacity: 0; 
+    opacity: 0.8; 
   }
   50% { 
     opacity: 1; 
   }
 }
 
-/* 弹性弹跳 */
+/* 弹性弹跳 - 移除，改为平滑过渡 */
 @keyframes bounce-elastic {
   0%, 100% { 
     transform: scale(1); 
   }
   50% { 
-    transform: scale(1.1); 
+    transform: scale(1.02); 
   }
 }
 
-/* 旋转加载 */
+/* 旋转加载 - 保留 */
 @keyframes spin-anime {
   from {
     transform: rotate(0deg);
@@ -40,32 +40,17 @@
   }
 }
 
-/* 心跳动画 */
+/* 心跳动画 - 移除 */
 @keyframes heartbeat {
   0%, 100% { 
     transform: scale(1); 
   }
-  10%, 30% { 
-    transform: scale(0.9); 
-  }
-  20%, 40%, 60%, 80% { 
-    transform: scale(1.1); 
-  }
-  50%, 70% { 
-    transform: scale(1.05); 
-  }
 }
 
-/* 脉冲动画 */
+/* 脉冲动画 - 移除 */
 @keyframes pulse-anime {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 157, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(255, 107, 157, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 157, 0);
+    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0);
   }
 }
 

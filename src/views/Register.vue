@@ -1,12 +1,12 @@
 <template>
   <div class="register-page">
-    <div class="register-container anime-fade-in-scale">
-      <AnimeCard class="register-card">
+    <div class="register-container">
+      <div class="auth-card">
         <!-- Logo and Title -->
         <div class="register-header">
-          <div class="logo anime-float">🌸</div>
-          <h1 class="title text-gradient-purple">加入我们</h1>
-          <p class="subtitle">开启你的二次元之旅</p>
+          <div class="logo">LeiterUp</div>
+          <h1 class="title">创建账户</h1>
+          <p class="subtitle">请输入您的信息以开始使用</p>
         </div>
         
         <!-- Register Form -->
@@ -16,25 +16,25 @@
           :rules="registerRules"
           class="register-form"
           @submit.prevent="handleRegister"
+          label-position="top"
+          hide-required-asterisk
         >
-          <el-form-item prop="email">
+          <el-form-item prop="email" label="邮箱">
             <el-input
               v-model="registerForm.email"
-              placeholder="邮箱地址"
-              class="anime-input"
+              placeholder="name@example.com"
+              class="apple-input"
               size="large"
-              prefix-icon="Message"
             />
           </el-form-item>
           
-          <el-form-item prop="email_code" v-if="config && (config.email_verify === 1 || config.is_email_verify === 1)">
-            <div style="display: flex; gap: 8px;">
+          <el-form-item prop="email_code" label="验证码" v-if="config && (config.email_verify === 1 || config.is_email_verify === 1)">
+            <div style="display: flex; gap: 12px;">
               <el-input
                 v-model="registerForm.email_code"
-                placeholder="邮箱验证码"
-                class="anime-input"
+                placeholder="6位验证码"
+                class="apple-input"
                 size="large"
-                prefix-icon="Key"
                 style="flex: 1;"
               />
               <el-button
@@ -42,50 +42,49 @@
                 :disabled="countdown > 0"
                 size="large"
                 @click="handleSendEmailCode"
-                style="width: 120px;"
+                class="verify-button"
+                style="width: 110px;"
               >
-                {{ countdown > 0 ? `${countdown}秒后重试` : '发送验证码' }}
+                {{ countdown > 0 ? `${countdown}s` : '发送' }}
               </el-button>
             </div>
           </el-form-item>
           
-          <el-form-item prop="password">
+          <el-form-item prop="password" label="密码">
             <el-input
               v-model="registerForm.password"
               type="password"
-              placeholder="密码"
-              class="anime-input"
+              placeholder=""
+              class="apple-input"
               size="large"
-              prefix-icon="Lock"
               show-password
             />
           </el-form-item>
           
-          <el-form-item prop="password_confirmation">
+          <el-form-item prop="password_confirmation" label="确认密码">
             <el-input
               v-model="registerForm.password_confirmation"
               type="password"
-              placeholder="确认密码"
-              class="anime-input"
+              placeholder=""
+              class="apple-input"
               size="large"
-              prefix-icon="Lock"
               show-password
             />
           </el-form-item>
           
-          <el-form-item prop="invite_code">
+          <el-form-item prop="invite_code" label="邀请码">
             <el-input
               v-model="registerForm.invite_code"
-              :placeholder="config && config.is_invite_force === 1 ? '邀请码（必填）' : '邀请码（可选）'"
-              class="anime-input"
+              :placeholder="config && config.is_invite_force === 1 ? '（必填）' : '（可选）'"
+              class="apple-input"
               size="large"
-              prefix-icon="Ticket"
             />
           </el-form-item>
           
           <el-button
             :loading="loading"
-            class="register-button anime-button anime-button-purple"
+            class="register-button"
+            type="primary"
             size="large"
             @click="handleRegister"
           >
@@ -95,11 +94,13 @@
         </el-form>
         
         <!-- Login Link -->
-        <div class="login-link">
-          <span>已有账号？</span>
-          <router-link to="/login" class="link">立即登录</router-link>
+        <div class="form-footer">
+          <div class="login-link">
+            <span>已有账号？</span>
+            <router-link to="/login" class="link">登录</router-link>
+          </div>
         </div>
-      </AnimeCard>
+      </div>
     </div>
   </div>
 </template>
@@ -109,7 +110,6 @@ import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
-import AnimeCard from '@/components/AnimeCard.vue'
 import { getConfig, sendEmailVerify } from '@/api/config'
 
 const router = useRouter()
@@ -117,6 +117,7 @@ const authStore = useAuthStore()
 
 const registerFormRef = ref(null)
 const loading = ref(false)
+
 const sendingCode = ref(false)
 const countdown = ref(0)
 const config = ref(null)
@@ -279,33 +280,22 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #E0B0FF 0%, #FFF0F5 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.register-page::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(199, 125, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  animation: float 20s linear infinite reverse;
-  pointer-events: none;
+  padding: 40px 24px;
+  background-color: #fbfbfd;
 }
 
 .register-container {
   width: 100%;
-  max-width: 450px;
-  z-index: 1;
+  max-width: 480px;
 }
 
-.register-card {
-  padding: 48px 40px;
+.auth-card {
+  padding: 56px 60px;
+  background: #fff;
+  /* Soft, apple-like shadow */
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border-radius: 24px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .register-header {
@@ -314,59 +304,115 @@ onMounted(async () => {
 }
 
 .logo {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1d1d1f;
+  letter-spacing: -0.5px;
 }
 
 .title {
   font-size: 32px;
   font-weight: 700;
+  color: #1d1d1f;
   margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  color: #999;
-  font-size: 14px;
+  color: #86868b;
+  font-size: 17px;
+  font-weight: 400;
 }
 
-.register-form {
-  margin-bottom: 24px;
+.register-form :deep(.el-form-item__label) {
+  padding-bottom: 8px;
+  font-size: 14px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.register-form :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 1px #d2d2d7 inset !important;
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 8px 12px;
+  height: 46px;
+  transition: all 0.2s ease;
+}
+
+.register-form :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px #0071e3 inset !important;
+}
+
+.verify-button {
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid #d2d2d7;
+  color: #0071e3;
+  font-weight: 500;
+}
+
+.verify-button:hover:not(:disabled) {
+  background-color: #f5f5f7;
+  border-color: #d2d2d7;
+  color: #0077ed;
 }
 
 .register-button {
   width: 100%;
   height: 48px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 12px;
+  border-radius: 12px;
+  background-color: #0071e3;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.register-button:hover,
+.register-button:focus {
+  background-color: #0077ed;
+}
+
+.form-footer {
+  margin-top: 32px;
+  text-align: center;
 }
 
 .login-link {
-  text-align: center;
-  color: #666;
-  font-size: 14px;
+  font-size: 15px;
+  color: #424245;
 }
 
 .login-link .link {
-  color: #C77DFF;
+  color: #0071e3;
   text-decoration: none;
-  font-weight: 600;
-  margin-left: 8px;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  margin-left: 5px;
 }
 
 .login-link .link:hover {
-  color: #E0B0FF;
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .register-card {
-    padding: 32px 24px;
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 40px 24px;
+    box-shadow: none;
+    background: transparent;
+    border: none;
   }
   
-  .title {
-    font-size: 28px;
+  .register-page {
+    background-color: #fff;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .register-container {
+    padding-top: 40px;
   }
 }
 </style>

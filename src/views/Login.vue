@@ -1,12 +1,12 @@
 <template>
   <div class="login-page">
-    <div class="login-container anime-fade-in-scale">
-      <AnimeCard class="login-card">
+    <div class="login-container">
+      <div class="auth-card">
         <!-- Logo and Title -->
         <div class="login-header">
-          <div class="logo anime-float">✨</div>
-          <h1 class="title text-gradient-pink">欢迎回来</h1>
-          <p class="subtitle">登录到你的二次元世界</p>
+          <div class="logo">LeiterUp</div>
+          <h1 class="title">登录</h1>
+          <p class="subtitle">欢迎回来，请登录您的账户</p>
         </div>
         
         <!-- Login Form -->
@@ -16,25 +16,25 @@
           :rules="loginRules"
           class="login-form"
           @submit.prevent="handleLogin"
+          label-position="top"
+          hide-required-asterisk
         >
-          <el-form-item prop="email">
+          <el-form-item prop="email" label="邮箱">
             <el-input
               v-model="loginForm.email"
-              placeholder="邮箱地址"
-              class="anime-input"
+              placeholder="name@example.com"
+              class="apple-input"
               size="large"
-              prefix-icon="Message"
             />
           </el-form-item>
           
-          <el-form-item prop="password">
+          <el-form-item prop="password" label="密码">
             <el-input
               v-model="loginForm.password"
               type="password"
-              placeholder="密码"
-              class="anime-input"
+              placeholder=""
+              class="apple-input"
               size="large"
-              prefix-icon="Lock"
               show-password
               @keyup.enter="handleLogin"
             />
@@ -42,7 +42,8 @@
           
           <el-button
             :loading="loading"
-            class="login-button anime-button"
+            class="login-button"
+            type="primary"
             size="large"
             @click="handleLogin"
           >
@@ -52,11 +53,13 @@
         </el-form>
         
         <!-- Register Link -->
-        <div class="register-link">
-          <span>还没有账号？</span>
-          <router-link to="/register" class="link">立即注册</router-link>
+        <div class="form-footer">
+          <div class="register-link">
+            <span>没有账号？</span>
+            <router-link to="/register" class="link">创建账户</router-link>
+          </div>
         </div>
-      </AnimeCard>
+      </div>
     </div>
   </div>
 </template>
@@ -66,13 +69,13 @@ import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { ElMessage } from 'element-plus'
-import AnimeCard from '@/components/AnimeCard.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
 const loginFormRef = ref(null)
 const loading = ref(false)
+
 
 const loginForm = reactive({
   email: '',
@@ -117,93 +120,120 @@ const handleLogin = async () => {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: linear-gradient(135deg, #FFF0F5 0%, #E0B0FF 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.login-page::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 107, 157, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  animation: float 20s linear infinite;
-  pointer-events: none;
+  background-color: #fbfbfd;
 }
 
 .login-container {
   width: 100%;
-  max-width: 450px;
-  z-index: 1;
+  max-width: 440px;
 }
 
-.login-card {
-  padding: 48px 40px;
+.auth-card {
+  padding: 56px 60px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  /* Optional border for higher contrast/definition */
+  border: 1px solid rgba(0, 0, 0, 0.04); 
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .logo {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1d1d1f;
+  letter-spacing: -0.5px;
 }
 
 .title {
   font-size: 32px;
   font-weight: 700;
+  color: #1d1d1f;
   margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
 .subtitle {
-  color: #999;
-  font-size: 14px;
+  color: #86868b;
+  font-size: 17px;
+  font-weight: 400;
 }
 
-.login-form {
-  margin-bottom: 24px;
+.login-form :deep(.el-form-item__label) {
+  padding-bottom: 8px;
+  font-size: 14px;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.login-form :deep(.el-input__wrapper) {
+  box-shadow: 0 0 0 1px #d2d2d7 inset !important;
+  background-color: transparent;
+  border-radius: 12px;
+  padding: 8px 12px;
+  height: 46px;
+  transition: all 0.2s ease;
+}
+
+.login-form :deep(.el-input__wrapper.is-focus) {
+  box-shadow: 0 0 0 2px #0071e3 inset !important;
 }
 
 .login-button {
   width: 100%;
   height: 48px;
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  margin-top: 12px;
+  border-radius: 12px;
+  background-color: #0071e3;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover,
+.login-button:focus {
+  background-color: #0077ed;
+}
+
+.form-footer {
+  margin-top: 32px;
+  text-align: center;
 }
 
 .register-link {
-  text-align: center;
-  color: #666;
-  font-size: 14px;
+  font-size: 15px;
+  color: #424245;
 }
 
 .register-link .link {
-  color: #FF6B9D;
+  color: #0071e3;
   text-decoration: none;
-  font-weight: 600;
-  margin-left: 8px;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  margin-left: 5px;
 }
 
 .register-link .link:hover {
-  color: #FFA8D5;
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .login-card {
-    padding: 32px 24px;
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 40px 24px;
+    box-shadow: none;
+    background: transparent;
+    border: none;
   }
   
-  .title {
-    font-size: 28px;
+  .login-page {
+    background-color: #fff;
+    align-items: flex-start;
+    padding-top: 60px;
   }
 }
 </style>
